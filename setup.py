@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name='pymitblod',
-    version="0.0.1",
+    version="0.0.2",
     author='Christian Skjerning',
     author_email='christian@skjerning.eu',
     description='API wrapper for blood donor webpages.',
