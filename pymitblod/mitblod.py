@@ -15,8 +15,8 @@ class MitBlod:
     Primary exported interface for eloverblik.dk API wrapper.
     '''
 
-    def __init__(self, username, password, institustion):
-        self._username = username
+    def __init__(self, identification, password, institustion):
+        self._identification = identification
         self._password = password
         self._institustion = institustion
         self._cookies = None
@@ -30,7 +30,7 @@ class MitBlod:
 
         if self._session_expires <  datetime.now().timestamp() or self._cookies is None:
             _LOGGER.debug("Refreshing cookies")
-            formdata = self._institustion.create_form(self._username, self._password)
+            formdata = self._institustion.create_form(self._identification, self._password)
             response = requests.post(self._institustion.auth_path(), data=formdata)
             response.raise_for_status()
 

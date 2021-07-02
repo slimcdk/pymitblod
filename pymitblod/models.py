@@ -11,6 +11,9 @@ class Institution:
         self._http_type = "https://"
         self._base_domain = base_domain
 
+    def __repr__(self):
+        return self.name()
+
     def name(self):
         return self._name
 
@@ -23,8 +26,8 @@ class Institution:
     def homepage_path(self):
         return f"{self.base_domain()}/startpage"
 
-    def create_form(self, username, password):
-        return {'id':username, 'password':password}
+    def create_form(self, identification, password):
+        return {'id':identification, 'password':password}
 
     def upcoming_booking_path(self):
         return f"{self.base_domain()}/booking/get-coming-appointments"

@@ -8,7 +8,6 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     LONG_DESCRIPTION = fh.read()
 
-
 setuptools.setup(
     name="pymitblod",
     version_config={
@@ -33,9 +32,7 @@ setuptools.setup(
         # "License :: OSI Approved :: Apache 2.0",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
+    packages=setuptools.find_packages(),
     python_requires=">=3.6",
     setup_requires=['setuptools-git-versioning'],
 )
-
