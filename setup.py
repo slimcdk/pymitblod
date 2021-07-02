@@ -9,19 +9,18 @@ with open("README.md", "r", encoding="utf-8") as fh:
     LONG_DESCRIPTION = fh.read()
 
 
-
 setuptools.setup(
-    name='pymitblod',
+    name="pymitblod",
     version="0.0.2",
-    author='Christian Skjerning',
-    author_email='christian@skjerning.eu',
-    description='API wrapper for blood donor webpages.',
+    author="Christian Skjerning",
+    author_email="christian@skjerning.eu",
+    description="API wrapper for blood donor webpages.",
     long_description=LONG_DESCRIPTION,
-    long_description_content_type='text/markdown',
-    url='https://github.com/slimcdk/pymitblod',
+    long_description_content_type="text/markdown",
+    url="https://github.com/slimcdk/pymitblod",
     install_requires=[
-        'requests==2.25.1',
-        'BeautifulSoup4==4.9.3'
+        "requests==2.25.1",
+        "BeautifulSoup4==4.9.3"
     ],
     project_urls={
         "Bug Tracker": "https://github.com/slimcdk/pymitblod/issues",
@@ -36,3 +35,4 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
 )
+
