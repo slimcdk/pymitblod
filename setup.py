@@ -23,7 +23,7 @@ setup(
     license='Apache 2.0',
     packages=['pymitblod'],
     install_requires=[
-        'requests==2.25.1'
+        'requests==2.25.1',
         'BeautifulSoup4==4.9.3'
     ]
 )

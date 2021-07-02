@@ -1,7 +1,8 @@
 '''
 Primary public API module for pymitblod.
 '''
-import requests, logging
+import requests
+import logging
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -86,7 +87,8 @@ class MitBlod:
         return bookings
 
 
-    def donations_history(self):
+
+    def donations(self):
         data = self._get_data(self._institustion.donations_history_path())
         history = []
         for d in data["columns"]:
@@ -100,9 +102,13 @@ class MitBlod:
             })
         return history
 
+    def donations_quantity(self):
+        return len(self.donations())
 
 
-    def messages_history(self):      
+
+
+    def messages(self):      
         history = []
         for columns in self._get_data(self._institustion.messages_history_path())["columns"]:
             history.append({
