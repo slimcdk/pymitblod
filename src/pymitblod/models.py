@@ -19,7 +19,7 @@ class Institution:
 
     def auth_path(self):
         return f"{self.base_domain()}/auth/login"
-    
+
     def homepage_path(self):
         return f"{self.base_domain()}/startpage"
 
