@@ -3,9 +3,9 @@ Init file for pymitblod
 '''
 
 from .mitblod import MitBlod
-from .models import Institution
-from .consts import Institutions as _Institutions
+from .institution import Institution, Institutions as _Institutions
+from .consts import Genders
 
 
-
+# A preinitialized instance of institutions 
 Institutions = _Institutions()

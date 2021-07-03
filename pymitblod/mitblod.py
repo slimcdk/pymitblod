@@ -5,79 +5,69 @@ import requests
 import logging
 from datetime import datetime
 from bs4 import BeautifulSoup
+from requests import cookies
+
+
+from .institution import Institution
+from .donor import Donor
+from .user import User
+
+from .consts import Genders
+
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class MitBlod:
+
+class MitBlod(User, Donor):
     '''
-    Primary exported interface for eloverblik.dk API wrapper.
+    Primary exported interface for pymitblod API wrapper.
     '''
 
-    def __init__(self, identification, password, institustion):
-        self._identification = identification
-        self._password = password
-        self._institustion = institustion
-        self._cookies = None
-        self._session_expires = 0
-
-        self._acquire_cookies()
+    def __init__(self, identification, password, institution, name=None, age=None, gender:Genders=None, weight=None, height=None):
+        User.__init__(self=self, identification=identification, password=password, institution=institution)
+        Donor.__init__(self=self, name=name, age=age, gender=gender, weight=weight, height=height)
+        self._institution = institution
 
 
-    def _acquire_cookies(self):
-        _LOGGER.debug(f"Requesting access at {self._institustion.name()}")
-
-        if self._session_expires <  datetime.now().timestamp() or self._cookies is None:
-            _LOGGER.debug("Refreshing cookies")
-            formdata = self._institustion.create_form(self._identification, self._password)
-            response = requests.post(self._institustion.auth_path(), data=formdata)
-            response.raise_for_status()
-
-            # eat cookies
-            self._cookies = response.cookies.get_dict()
-            for cookie in response.cookies:
-                if len(cookie.name) == 40: self._session_expires = int(cookie.expires)
-
-        else:
-            _LOGGER.debug("Cookies are still valid")
-        return self._cookies
-
-
-    def _get_data(self, url):
-        self._acquire_cookies()
-
-        response = requests.get(url, cookies=self._cookies)
-        response.raise_for_status()
-        if response.json()["replyStatus"]["status"] != "OK":
-            return None
-        return response.json()["data"]
+    def institution(self) -> Institution:
+        return self._institution
 
 
     def name(self):
-        self._acquire_cookies()
-        response = requests.get(self._institustion.homepage_path(), cookies=self._cookies)
+        if self._name is not None: return self._name
+        response = requests.get(
+            self.institution().homepage_path().secure(),
+            cookies=self.active_login_cookies()
+        )
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')       
         return " ".join(soup.find(id="full-name").text.split()) # remove weirdly added spaces and newlines
 
+        
 
-    def blood_type(self):
-        self._acquire_cookies()
-        response = requests.get(self._institustion.homepage_path(), cookies=self._cookies)
+
+    def blood_type(self) -> str:
+        response = requests.get(self.institution().homepage_path().secure(), cookies=self.active_login_cookies())
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         return soup.find(attrs={"class": "blodtype"}).text.strip()
 
 
-    def next_booking(self):
+    def next_booking(self) -> list:
+        response = requests.get(
+            self.institution().upcoming_booking_path().secure(),
+            cookies=self.active_login_cookies()
+        )
+        response.raise_for_status()
 
         bookings = []
-        for d in self._get_data(self._institustion.upcoming_booking_path()):
+        for d in response.json()["data"]:
             bookings.append({
                 "location": {
                     "id": d["location"]["id"] or None,
-                    "region": self._institustion.name() or None,
+                    "region": self.institution().name() or None,
                     "area": d["calendar"]["name"] or None,
                     "location": d["location"]["name"] or None,
                 },
@@ -87,11 +77,15 @@ class MitBlod:
         return bookings
 
 
+    def donations(self) -> list:
+        response = requests.get(
+            self.institution().donations_history_path().secure(),
+            cookies=self.active_login_cookies()
+        )
+        response.raise_for_status()
 
-    def donations(self):
-        data = self._get_data(self._institustion.donations_history_path())
         history = []
-        for d in data["columns"]:
+        for d in response.json()["data"]["columns"]:
             history.append({
                 "date": datetime.strptime(d[0], '%d-%m-%Y').isoformat(),
                 "hb": d[1] or None,
@@ -102,15 +96,20 @@ class MitBlod:
             })
         return history
 
-    def donations_quantity(self):
+
+    def donations_quantity(self) -> int:
         return len(self.donations())
 
 
-
-
-    def messages(self):      
+    def messages(self) -> list:
+        response = requests.get(
+            self.institution().messages_history_path().secure(),
+            cookies=self.active_login_cookies()
+        )
+        response.raise_for_status()
+        
         history = []
-        for columns in self._get_data(self._institustion.messages_history_path())["columns"]:
+        for columns in response.json()["data"]["columns"]:
             history.append({
                 "date": datetime.strptime(columns[0], '%d-%m-%Y, kl. %H:%M').isoformat(),
                 "type": columns[1] or None,
