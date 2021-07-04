@@ -2,22 +2,18 @@
 Primary public API module for pymitblod.
 '''
 
+
+
 from __future__ import annotations
-from pymitblod.gender import Gender
-import requests
-import logging
+
+import asyncio, requests,logging
 from datetime import datetime
 from bs4 import BeautifulSoup
-from requests import cookies
-
 
 from .institution import Institution
 from .donor import Donor
 from .user import User
 from .gender import Gender
-
-from .consts import Genders, Institutions
-
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -28,7 +24,6 @@ class MitBlod(User, Donor):
     '''
     Primary exported interface for pymitblod API wrapper.
     '''
-
     def __init__(
             self, 
             identification:str, 
@@ -40,14 +35,12 @@ class MitBlod(User, Donor):
             weight:int=None,
             height:int=None
         ) -> MitBlod:
-        
         User.__init__(
             self=self,
             identification=identification, 
             password=password, 
             institution=institution
         )
-
         Donor.__init__(
             self=self, 
             name=name, 
@@ -56,6 +49,7 @@ class MitBlod(User, Donor):
             weight=weight, 
             height=height,
         )
+
 
     def mitblod_name(self) -> str:
         response = requests.get(
@@ -107,11 +101,11 @@ class MitBlod(User, Donor):
         for d in response.json()["data"]["columns"]:
             history.append({
                 "date": datetime.strptime(d[0], '%d-%m-%Y').isoformat(),
-                "hb": d[1] or None,
-                "blodtryk": d[2] or None,
-                "covid_ab": d[3] or None,
-                "puls": d[4] or None,
-                "tappemåde": d[5] or None
+                "hemoglobin_level": d[1] or None,
+                "blood_pressure": d[2] or None,
+                "covid_antibodies": d[3] or None,
+                "heart_rate": d[4] or None,
+                "tapping_type": d[5] or None
             })
         return history
 

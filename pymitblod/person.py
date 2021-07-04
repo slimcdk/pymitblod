@@ -24,17 +24,22 @@ class Person:
         self._age:float = age
         self._gender:Gender = gender
 
+
     def name(self) -> str:
         return self._name
-    
+
+
     def age(self) -> float:
         return self._age
-    
+
+
     def weight(self) -> float:
         return self._weight
-    
+
+
     def height(self) -> float:
         return self._height
+
 
     def gender(self) -> Gender:
         return self._gender

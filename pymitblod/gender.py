@@ -20,8 +20,10 @@ class Gender():
         self._name = name
         self._blood_volume_ml_lambda = blood_volume_ml_lambda
 
+
     def __repr__(self) -> str:
         return str(self._name)
+
 
     def blood_volume_ml_lambda(self) -> Callable:
         return self._blood_volume_ml_lambda

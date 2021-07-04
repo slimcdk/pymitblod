@@ -23,9 +23,11 @@ class User:
         self._institution:Institution = institution
         self._cookies:dict = None
         self._cookies_expires_at:int = 0
+
     
     def institution(self) -> Institution:
         return self._institution
+
 
     def login(self) -> requests.status_codes:
         formdata = self._institution.__login_form__(self._identification, self._password)
@@ -35,12 +37,13 @@ class User:
         return session.status_code
 
 
+    def signout(self) -> None:
+        self._cookies = None
+        self._cookies_expires_at = 0
+
+
     def can_login(self) -> bool:
         return self.login() == 200
-
-
-    def signout(self) -> None:
-        self.cookies(None)
 
 
     def cookies(self, cookies) -> None:
@@ -52,6 +55,10 @@ class User:
         return self._cookies.get_dict()
 
 
+    def cookies_expired(self) -> bool:
+        return self._cookies_expires_at < datetime.now().timestamp()
+
+
     def _set_cookies_expiration(self) -> None:
         if self._cookies is None:
             self._cookies_expires_at = 0
@@ -60,10 +67,6 @@ class User:
                 self._cookies_expires_at = int(cookie.expires)
         else:
             self._cookies_expires_at = 0
-
-
-    def cookies_expired(self) -> bool:
-        return self._cookies_expires_at < datetime.now().timestamp()
 
 
     def active_login_cookies(self) -> dict:
