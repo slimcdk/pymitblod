@@ -1,6 +1,9 @@
 '''
 Primary public API module for pymitblod.
 '''
+
+from __future__ import annotations
+from pymitblod.gender import Gender
 import requests
 import logging
 from datetime import datetime
@@ -11,8 +14,9 @@ from requests import cookies
 from .institution import Institution
 from .donor import Donor
 from .user import User
+from .gender import Gender
 
-from .consts import Genders
+from .consts import Genders, Institutions
 
 
 
@@ -25,18 +29,35 @@ class MitBlod(User, Donor):
     Primary exported interface for pymitblod API wrapper.
     '''
 
-    def __init__(self, identification, password, institution, name=None, age=None, gender:Genders=None, weight=None, height=None):
-        User.__init__(self=self, identification=identification, password=password, institution=institution)
-        Donor.__init__(self=self, name=name, age=age, gender=gender, weight=weight, height=height)
-        self._institution = institution
+    def __init__(
+            self, 
+            identification:str, 
+            password:str, 
+            institution:Institution, 
+            name:str=None,
+            age:int=None,
+            gender:Gender=None,
+            weight:int=None,
+            height:int=None
+        ) -> MitBlod:
+        
+        User.__init__(
+            self=self,
+            identification=identification, 
+            password=password, 
+            institution=institution
+        )
 
+        Donor.__init__(
+            self=self, 
+            name=name, 
+            age=age, 
+            gender=gender, 
+            weight=weight, 
+            height=height,
+        )
 
-    def institution(self) -> Institution:
-        return self._institution
-
-
-    def name(self):
-        if self._name is not None: return self._name
+    def mitblod_name(self) -> str:
         response = requests.get(
             self.institution().homepage_path().secure(),
             cookies=self.active_login_cookies()
@@ -44,9 +65,7 @@ class MitBlod(User, Donor):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')       
         return " ".join(soup.find(id="full-name").text.split()) # remove weirdly added spaces and newlines
-
-        
-
+       
 
     def blood_type(self) -> str:
         response = requests.get(self.institution().homepage_path().secure(), cookies=self.active_login_cookies())

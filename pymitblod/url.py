@@ -3,6 +3,7 @@ All model classes for pymitblod
 '''
 
 
+from __future__ import annotations
 
 
 

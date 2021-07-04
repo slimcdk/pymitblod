@@ -1,22 +1,31 @@
 '''
 All model classes for pymitblod
 '''
+from __future__ import annotations
 
 import requests
 from datetime import datetime
 from .institution import Institution
+from .consts import Institutions
 
 class User:
     '''
     Class representing a user with login ability.
     '''
-    def __init__(self, identification:str, password:str, institution:Institution):
+    def __init__(
+            self, 
+            identification:str, 
+            password:str, 
+            institution:Institution
+        ):
         self._identification:str = identification
         self._password:str = password
         self._institution:Institution = institution
-        self._cookies = None
-        self._cookies_expires_at = 0
-
+        self._cookies:dict = None
+        self._cookies_expires_at:int = 0
+    
+    def institution(self) -> Institution:
+        return self._institution
 
     def login(self) -> requests.status_codes:
         formdata = self._institution.__login_form__(self._identification, self._password)

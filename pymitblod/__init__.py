@@ -2,10 +2,11 @@
 Init file for pymitblod
 '''
 
+
 from .mitblod import MitBlod
-from .institution import Institution, Institutions as _Institutions
-from .consts import Genders
+from .institution import Institution
+from .gender import Gender
+from .consts import Institutions, Genders
 
-
-# A preinitialized instance of institutions 
-Institutions = _Institutions()
+from .person import Person
+from .donor import Donor

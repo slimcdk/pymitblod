@@ -1,21 +1,33 @@
 '''
 All model classes for pymitblod
 '''
+from __future__ import annotations
 
 from .consts import Genders
 from .person import Person
 from .utils import *
-
+from .gender import Gender
 
 
 class Donor(Person):
     
-    def __init__(self, name:str, age:float, gender:Genders, weight:float, height:float):
-        Person.__init__(self=self, name=name, age=age, gender=gender, weight=weight, height=height)
+    def __init__(
+            self,
+            name:str,
+            gender:Gender,
+            age:float,
+            weight:float,
+            height:float,
+        ) -> Donor:
+        Person.__init__(
+            self=self, 
+            name=name,
+            age=age,
+            gender=gender,
+            weight=weight, 
+            height=height
+        )
+
 
     def blood_volume_ml(self) -> int:
-        if self._gender is Genders.MALE:
-            return int(male_blood_volume(self._age, self._weight, self._height))
-        elif self._gender is Genders.FEMALE:
-            return int(female_blood_volume(self._age, self._weight, self._height))
-        return None
+        return self._gender.blood_volume_ml_lambda()(self._age, self._weight, self._height)
