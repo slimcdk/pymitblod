@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 from .institution import Institution
 from .donor import Donor
-from .user import User
+from .user import MitBlodUser
 from .gender import Gender
 
 
@@ -20,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 
-class MitBlod(User, Donor):
+class MitBlod(MitBlodUser, Donor):
     '''
     Primary exported interface for pymitblod API wrapper.
     '''
@@ -35,7 +35,7 @@ class MitBlod(User, Donor):
             weight:int=None,
             height:int=None
         ) -> MitBlod:
-        User.__init__(
+        MitBlodUser.__init__(
             self=self,
             identification=identification, 
             password=password, 
@@ -68,7 +68,7 @@ class MitBlod(User, Donor):
         return soup.find(attrs={"class": "blodtype"}).text.strip()
 
 
-    def next_booking(self) -> list:
+    def next_bookings(self) -> list:
         response = requests.get(
             self.institution().upcoming_booking_path().secure(),
             cookies=self.active_login_cookies()
@@ -80,9 +80,9 @@ class MitBlod(User, Donor):
             bookings.append({
                 "location": {
                     "id": d["location"]["id"] or None,
-                    "region": self.institution().name() or None,
-                    "area": d["calendar"]["name"] or None,
-                    "location": d["location"]["name"] or None,
+                    "region": self.institution().__repr__(),
+                    "name": d["calendar"]["name"] or None,
+                    "area": d["location"]["name"] or None,
                 },
                 "type": d["donationType"],
                 "date": datetime.fromisoformat(d["fromDate"]).isoformat()
