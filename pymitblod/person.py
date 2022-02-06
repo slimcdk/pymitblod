@@ -13,12 +13,18 @@ class Person(object):
     Class representing a real person.
     '''
 
-    def __init__(self, name:str, birthday:datetime=None, gender:Gender=None, weight:float=None, height:float=None) -> Person:
-        self._name:str = name
-        self._height:float = height
-        self._weight:float = weight
-        self._birthday:datetime = birthday
-        self._gender:Gender = gender
+    def __init__(
+        self, name: str,
+        birthday: datetime = None,
+        gender: Gender = None,
+        weight: float = None,
+        height: float = None
+    ) -> Person:
+        self._name: str = name
+        self._height: float = height
+        self._weight: float = weight
+        self._birthday: datetime = birthday
+        self._gender: Gender = gender
 
     def name(self) -> str:
         '''Returns the name of this person'''
@@ -27,7 +33,6 @@ class Person(object):
     def birthday(self) -> datetime:
         '''Returns the birthday of this person'''
         return self._birthday
-
 
     def age(self) -> float:
         '''Returns the age of this person'''

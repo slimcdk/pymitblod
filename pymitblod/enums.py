@@ -10,17 +10,16 @@ from .institution import Institution
 from .gender import Gender
 
 
-
 class Enum:
-
     '''
     Base class for a enums
     '''
 
-    def get_enum_for(self, value:str):
+    def get_enum_for(self, value: str):
         '''Search for enum with given value'''
         for var in vars(self).values():
-            if var.__repr__() == value: return var
+            if var.__repr__() == value:
+                return var
 
     def dict(self):
         '''Return all values as a dict'''
@@ -52,8 +51,6 @@ class GenderEnums(Enum):
         return "Genders"
 
 
-
-
 class InstitutionEnums(Enum):
 
     '''
@@ -62,17 +59,15 @@ class InstitutionEnums(Enum):
 
     def __init__(self) -> InstitutionEnums:
         self.REGION_SYDDANMARK = Institution(
-            idx = 0,
-            name = "Region Syddanmark",
-            domain = Url("blodtapning.regionsyddanmark.dk"),
-            #login_form_lambda   = lambda id, pass: {'id':id, 'password':pass}
+            idx=0,
+            name="Region Syddanmark",
+            domain=Url("blodtapning.regionsyddanmark.dk"),
         )
-    
+
         self.REGION_MIDTJYLLAND = Institution(
-            idx = 1,
-            name = "Region Midtjylland", 
-            domain = Url("bloddonor.rm.dk"),
-            #login_form_lambda   = lambda id, pass: {'id':id, 'password':pass}
+            idx=1,
+            name="Region Midtjylland",
+            domain=Url("bloddonor.rm.dk"),
         )
 
     def __repr__(self) -> str:

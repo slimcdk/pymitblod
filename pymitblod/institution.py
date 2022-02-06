@@ -6,12 +6,11 @@ from __future__ import annotations
 from .url import Url
 
 
-
 class Institution(object):
     '''
     Class representing an institution.
     '''
-    def __init__(self, idx:int, name:str, domain:Url, login_form:dict=None) -> Institution:
+    def __init__(self, idx: int, name: str, domain: Url, login_form: dict = None) -> Institution:
         self._domain = domain
         self._idx = idx
         self._name = name
@@ -48,4 +47,4 @@ class Institution(object):
         ''' TODO '''
         if self._login_form:
             return self._login_form
-        return {'id':identification, 'password':password}
+        return {'id': identification, 'password': password}
