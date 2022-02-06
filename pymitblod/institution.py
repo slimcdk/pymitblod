@@ -19,6 +19,9 @@ class Institution(object):
     def __repr__(self) -> str:
         return str(self._name)
 
+    def __str__(self) -> str:
+        return str(self._name)
+
     def domain(self) -> Url:
         ''' TODO '''
         return self._domain

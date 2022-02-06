@@ -39,7 +39,6 @@ class MitBlodUser:
         '''Set active login session cookies on this user'''
         formdata = self._institution.__login_form__(self._identification, self._password)
         session = requests.post(self.institution().auth_path().secure(), data=formdata)
-        session.raise_for_status()
         self.cookies(session.cookies)
         return session.status_code
 

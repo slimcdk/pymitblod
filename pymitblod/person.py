@@ -15,10 +15,10 @@ class Person(object):
 
     def __init__(
         self, name: str,
-        birthday: datetime = None,
-        gender: Gender = None,
-        weight: float = None,
-        height: float = None
+        birthday: datetime,
+        gender: Gender,
+        weight: float,
+        height: float
     ) -> Person:
         self._name: str = name
         self._height: float = height

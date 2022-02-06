@@ -20,8 +20,8 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/slimcdk/pymitblod",
     install_requires=[
-        "requests==2.25.1",
-        "BeautifulSoup4==4.9.3"
+        "requests==2.26.0",
+        "BeautifulSoup4==4.10.0"
     ],
     project_urls={
         "Bug Tracker": "https://github.com/slimcdk/pymitblod/issues",
