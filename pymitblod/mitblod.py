@@ -6,7 +6,7 @@ Primary public API module for pymitblod.
 
 from __future__ import annotations
 
-import asyncio, requests,logging
+import requests,logging
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -19,22 +19,22 @@ from .gender import Gender
 _LOGGER = logging.getLogger(__name__)
 
 
-
 class MitBlod(MitBlodUser, Donor):
     '''
     Primary exported interface for pymitblod API wrapper.
     '''
     def __init__(
-            self, 
-            identification:str, 
-            password:str, 
-            institution:Institution, 
-            name:str=None,
-            age:int=None,
-            gender:Gender=None,
-            weight:int=None,
-            height:int=None
+            self,
+            identification:str,
+            password:str,
+            institution:Institution,
+            name:str,
+            birthday:datetime,
+            gender:Gender,
+            weight:int,
+            height:int
         ) -> MitBlod:
+
         MitBlodUser.__init__(
             self=self,
             identification=identification, 
@@ -42,16 +42,17 @@ class MitBlod(MitBlodUser, Donor):
             institution=institution
         )
         Donor.__init__(
-            self=self, 
-            name=name, 
-            age=age, 
-            gender=gender, 
-            weight=weight, 
+            self=self,
+            name=name,
+            birthday=birthday,
+            gender=gender,
+            weight=weight,
             height=height,
         )
 
 
     def mitblod_name(self) -> str:
+        '''Fetches the name of the patient'''
         response = requests.get(
             self.institution().homepage_path().secure(),
             cookies=self.active_login_cookies()
@@ -62,6 +63,7 @@ class MitBlod(MitBlodUser, Donor):
        
 
     def blood_type(self) -> str:
+        '''Fetches the bloodtype of the patient'''
         response = requests.get(self.institution().homepage_path().secure(), cookies=self.active_login_cookies())
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -69,6 +71,7 @@ class MitBlod(MitBlodUser, Donor):
 
 
     def next_bookings(self) -> list:
+        '''Fetches the next booking for patient'''
         response = requests.get(
             self.institution().upcoming_booking_path().secure(),
             cookies=self.active_login_cookies()
@@ -91,41 +94,47 @@ class MitBlod(MitBlodUser, Donor):
 
 
     def donations(self) -> list:
+        '''Fetches donations history for patient'''
         response = requests.get(
             self.institution().donations_history_path().secure(),
             cookies=self.active_login_cookies()
         )
         response.raise_for_status()
 
+        # Map data lists to dicts
+        keys = response.json()["data"]["classes"]
         history = []
-        for d in response.json()["data"]["columns"]:
-            history.append({
-                "date": datetime.strptime(d[0], '%d-%m-%Y').isoformat(),
-                "hemoglobin_level": d[1] or None,
-                "blood_pressure": d[2] or None,
-                "covid_antibodies": d[3] or None,
-                "heart_rate": d[4] or None,
-                "tapping_type": d[5] or None
-            })
+        for data_row in response.json()["data"]["columns"]:
+            history_point = {}
+            for idx,value in enumerate(data_row):
+                history_point[keys[idx]] = value
+                if keys[idx].lower().endswith('date'):
+                    history_point[f'{keys[idx]}ISO8601'] = datetime.strptime(value, '%d-%m-%Y').isoformat()
+            history.append(history_point)
         return history
 
 
     def donations_quantity(self) -> int:
+        '''Fetches the amount of donations given by the patient'''
         return len(self.donations())
 
 
     def messages(self) -> list:
+        '''Fetches all messages sent to patient'''
         response = requests.get(
             self.institution().messages_history_path().secure(),
             cookies=self.active_login_cookies()
         )
         response.raise_for_status()
-        
+
+        # Map data lists to dicts
+        keys = response.json()["data"]["classes"]
         history = []
-        for columns in response.json()["data"]["columns"]:
-            history.append({
-                "date": datetime.strptime(columns[0], '%d-%m-%Y, kl. %H:%M').isoformat(),
-                "type": columns[1] or None,
-                "message": columns[2] or None
-            })
+        for data_row in response.json()["data"]["columns"]:
+            history_point = {}
+            for idx,value in enumerate(data_row):
+                history_point[keys[idx]] = value
+                if keys[idx].lower().endswith('date'):
+                    history_point[f'{keys[idx]}ISO8601'] = datetime.strptime(value, '%d-%m-%Y, kl. %H:%M').isoformat()
+            history.append(history_point)
         return history
