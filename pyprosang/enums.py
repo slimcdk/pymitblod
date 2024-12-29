@@ -1,5 +1,5 @@
 '''
-Enums for pymitblod
+Enums for pyprosang
 '''
 from __future__ import annotations
 

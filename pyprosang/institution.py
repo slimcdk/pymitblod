@@ -1,5 +1,5 @@
 '''
-All model classes for pymitblod
+All model classes for pyprosang
 '''
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ class Institution(object):
     '''
     Class representing an institution.
     '''
-    def __init__(self, idx: int, name: str, domain: Url, login_form: dict = None) -> Institution:
+    def __init__(self, idx:int, name:str, domain:Url, login_form:dict = None) -> Institution:
         self._domain = domain
         self._idx = idx
         self._name = name
@@ -26,9 +26,22 @@ class Institution(object):
         ''' TODO '''
         return self._domain
 
-    def auth_path(self) -> str:
+    def api_translations_path(self) -> str:
         ''' TODO '''
-        return self._domain.join_path("auth").join_path("login")
+        return self._domain.join_path("api").join_path("translations")
+
+
+    # def auth_path(self) -> str:
+    #     ''' TODO '''
+    #     return self._domain.join_path("auth").join_path("login")
+
+    def api_login_path(self) -> str:
+        ''' TODO '''
+        return self._domain.join_path("api").join_path("auth").join_path("login")
+
+    def api_login_code_path(self) -> str:
+        ''' TODO '''
+        return self._domain.join_path("api").join_path("auth").join_path("login").join_path("step-2")
 
     def homepage_path(self) -> str:
         ''' TODO '''
@@ -46,8 +59,12 @@ class Institution(object):
         ''' TODO '''
         return self._domain.join_path("tableData").join_path("DonorMessages")
 
-    def __login_form__(self, identification, password) -> dict:
+    def __login_form__(self, identification:str, password:str) -> dict:
         ''' TODO '''
         if self._login_form:
             return self._login_form
         return {'id': identification, 'password': password}
+    
+    def __login_code_form__(self, code:str) -> dict:
+        ''' TODO '''
+        return {'password2': code}

@@ -1,5 +1,5 @@
 '''
-Primary public API module for pymitblod.
+Primary public API module for pyprosang.
 '''
 
 from __future__ import annotations
@@ -11,45 +11,26 @@ from bs4 import BeautifulSoup
 
 from .institution import Institution
 from .donor import Donor
-from .user import MitBlodUser
+from .user import ProSangUser
 from .gender import Gender
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class MitBlod(MitBlodUser, Donor):
+class ProSang(ProSangUser, Donor):
     '''
-    Primary exported interface for pymitblod API wrapper.
+    Primary exported interface for pyprosang API wrapper.
     '''
-    def __init__(
-        self,
-        identification: str,
-        password: str,
-        institution: Institution,
-        name: str,
-        birthday: datetime,
-        gender: Gender,
-        weight: int,
-        height: int
-    ) -> MitBlod:
+    def __init__(self, identity:str, password:str, institution:Institution, weight:int, height:int, name:str=None, birthday:datetime=None, gender:Gender=None) -> ProSang:
+        ProSangUser.__init__(self=self, identity=identity, password=password, institution=institution)
+        Donor.__init__(self=self, name=name, birthday=birthday, gender=gender, weight=weight, height=height)
 
-        MitBlodUser.__init__(
-            self=self,
-            identification=identification,
-            password=password,
-            institution=institution
-        )
-        Donor.__init__(
-            self=self,
-            name=name,
-            birthday=birthday,
-            gender=gender,
-            weight=weight,
-            height=height,
-        )
+    def reinit_donor(self) -> bool:
+        return True
 
-    def mitblod_name(self) -> str:
+
+    def prosang_name(self) -> str:
         '''Fetches the name of the patient'''
         response = requests.get(
             self.institution().homepage_path().secure(),

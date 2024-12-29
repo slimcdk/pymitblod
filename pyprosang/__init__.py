@@ -1,8 +1,8 @@
 '''
-Init file for pymitblod
+Init file for pyprosang
 '''
 
-from .mitblod import MitBlod, MitBlodUser
+from .prosang import ProSang, ProSangUser
 from .institution import Institution
 from .gender import Gender
 from .enums import Institutions, Genders

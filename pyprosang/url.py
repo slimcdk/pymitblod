@@ -1,5 +1,5 @@
 '''
-All model classes for pymitblod
+All model classes for pyprosang
 '''
 
 

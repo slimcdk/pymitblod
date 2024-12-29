@@ -1,5 +1,5 @@
 '''
-All model classes for pymitblod
+All model classes for pyprosang
 '''
 from __future__ import annotations
 
@@ -14,17 +14,17 @@ class Person(object):
     '''
 
     def __init__(
-        self, name: str,
-        birthday: datetime,
-        gender: Gender,
-        weight: float,
-        height: float
+        self, name:str,
+        birthday:datetime,
+        gender:Gender,
+        weight:float,
+        height:float
     ) -> Person:
-        self._name: str = name
-        self._height: float = height
-        self._weight: float = weight
-        self._birthday: datetime = birthday
-        self._gender: Gender = gender
+        self._name:str = name
+        self._height:float = height
+        self._weight:float = weight
+        self._birthday:datetime = birthday
+        self._gender:Gender = gender
 
     def name(self) -> str:
         '''Returns the name of this person'''

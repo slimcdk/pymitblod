@@ -1,5 +1,5 @@
 '''
-All model classes for pymitblod
+All model classes for pyprosang
 '''
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ import math
 from .enums import Genders
 from .person import Person
 from .gender import Gender
-
 
 # Blood volume calculation methods
 # https://pubmed.ncbi.nlm.nih.gov/30252333/
@@ -48,7 +47,7 @@ class Donor(Person):
     Class representing a doner.
     '''
 
-    def __init__(self, name: str, gender: Gender, birthday: datetime, weight: float, height: float) -> Donor:
+    def __init__(self, name:str, gender:Gender, birthday:datetime, weight:float, height:float) -> Donor:
         Person.__init__(self=self, name=name, birthday=birthday, gender=gender, weight=weight, height=height)
 
     def body_mass_index(self) -> float:
